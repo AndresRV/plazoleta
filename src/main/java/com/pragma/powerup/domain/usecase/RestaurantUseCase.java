@@ -27,6 +27,11 @@ public class RestaurantUseCase implements IRestaurantServicePort {
         restaurantPersistentPort.saveRestaurant(restaurant);
     }
 
+    @Override
+    public Restaurant getRestauranByNit(Long nit) {
+        return restaurantPersistentPort.getRestauranByNit(nit);
+    }
+
     private static void validatePhoneNumber(String phoneNumber) {
         Matcher matcher = Pattern.compile(PHONE_NUMBER_REGEX).matcher(phoneNumber);
         if (!matcher.matches())
