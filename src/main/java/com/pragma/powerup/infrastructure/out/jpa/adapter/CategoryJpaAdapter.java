@@ -2,7 +2,7 @@ package com.pragma.powerup.infrastructure.out.jpa.adapter;
 
 import com.pragma.powerup.domain.model.Category;
 import com.pragma.powerup.domain.spi.ICategoryPersistencePort;
-import com.pragma.powerup.infrastructure.exception.CategoryNoFoundException;
+import com.pragma.powerup.infrastructure.exception.CategoryNotFoundException;
 import com.pragma.powerup.infrastructure.out.jpa.mapper.ICategoryEntityMapper;
 import com.pragma.powerup.infrastructure.out.jpa.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +15,6 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     @Override
     public Category getCategoryByCategoryName(String categoryName) {
         return categoryEntityMapper.toCategory(categoryRepository.findByCategoryName(categoryName)
-                .orElseThrow(CategoryNoFoundException::new));
+                .orElseThrow(CategoryNotFoundException::new));
     }
 }
