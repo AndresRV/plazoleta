@@ -2,7 +2,9 @@ package com.pragma.powerup.infrastructure.exceptionhandler;
 
 import com.pragma.powerup.domain.exception.InvalidNameException;
 import com.pragma.powerup.domain.exception.InvalidPhoneNumberException;
-import com.pragma.powerup.infrastructure.exception.CategoryNoFoundException;
+import com.pragma.powerup.infrastructure.exception.CategoryNotFoundException;
+import com.pragma.powerup.infrastructure.exception.DishNotFoundException;
+import com.pragma.powerup.infrastructure.exception.DishAlreadyExistsException;
 import com.pragma.powerup.infrastructure.exception.NoDataFoundException;
 import com.pragma.powerup.infrastructure.exception.RestaurantAlreadyExistsException;
 import com.pragma.powerup.infrastructure.exception.RestaurantNotFoundException;
@@ -19,11 +21,18 @@ public class ControllerAdvisor {
 
     private static final String MESSAGE = "message";
 
-    @ExceptionHandler(CategoryNoFoundException.class)
-    public ResponseEntity<Map<String, String>> handleCategoryNoFoundException(
-            CategoryNoFoundException ignoredCategoryNoFoundException) {
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCategoryNotFoundException(
+            CategoryNotFoundException ignoredCategoryNotFoundException) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Collections.singletonMap(MESSAGE, ExceptionResponse.NO_CATEGORY_FOUND.getMessage()));
+    }
+
+    @ExceptionHandler(DishNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleDishNotFoundException(
+            DishNotFoundException ignoredDishNotFoundException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap(MESSAGE, ExceptionResponse.NO_DISH_FOUND.getMessage()));
     }
 
     @ExceptionHandler(RestaurantNotFoundException.class)
@@ -42,9 +51,16 @@ public class ControllerAdvisor {
 
     @ExceptionHandler(RestaurantAlreadyExistsException.class)
     public ResponseEntity<Map<String, String>> handleRestaurantAlreadyExistsException(
-            RestaurantAlreadyExistsException ignoredNoDataFoundException) {
+            RestaurantAlreadyExistsException ignoredRestaurantAlreadyExistsException) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Collections.singletonMap(MESSAGE, ExceptionResponse.RESTAURANT_ALREADY_EXISTS.getMessage()));
+    }
+
+    @ExceptionHandler(DishAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handleDishAlreadyExistsException(
+            DishAlreadyExistsException ignoredDishAlreadyExistsException) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Collections.singletonMap(MESSAGE, ExceptionResponse.DISH_ALREADY_EXISTS.getMessage()));
     }
 
     @ExceptionHandler(InvalidNameException.class)

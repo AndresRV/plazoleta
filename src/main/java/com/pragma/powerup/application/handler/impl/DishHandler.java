@@ -33,4 +33,26 @@ public class DishHandler implements IDishHandler {
 
         dishServicePort.saveDish(dish);
     }
+
+    @Override
+    public void updateDish(DishRequest dishRequest) {
+        Restaurant restaurant = restaurantServicePort.getRestauranByNit(dishRequest.getRestaurantNit());
+
+        Dish oldDish = dishServicePort.getDishByNameAndIdRestaurant(dishRequest.getName(), restaurant.getId());
+
+        Dish newDish = dishRequestMapper.toDish(dishRequest);
+        newDish.setId(oldDish.getId());
+        newDish.setIdCategory(oldDish.getIdCategory());
+        newDish.setIdRestaurant(oldDish.getIdRestaurant());
+        newDish.setImageUrl(oldDish.getImageUrl());
+        newDish.setActive(oldDish.getActive());
+
+        if (newDish.getDescription() == null)
+            newDish.setDescription(oldDish.getDescription());
+
+        if (newDish.getPrice() == null)
+            newDish.setPrice(oldDish.getPrice());
+
+        dishServicePort.updateDish(newDish);
+    }
 }

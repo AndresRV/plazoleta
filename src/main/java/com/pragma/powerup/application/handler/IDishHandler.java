@@ -4,4 +4,5 @@ import com.pragma.powerup.application.dto.request.DishRequest;
 
 public interface IDishHandler {
     void saveDish(DishRequest dishRequest);
+    void updateDish(DishRequest dishRequest);
 }
