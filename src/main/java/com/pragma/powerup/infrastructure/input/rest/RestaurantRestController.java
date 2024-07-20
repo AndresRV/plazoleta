@@ -14,7 +14,7 @@ public class RestaurantRestController {
     private final IRestaurantHandler restaurantHandler;
 
     @PostMapping("")
-    public ResponseEntity<Void> saveUser(@RequestBody RestaurantRequest restaurantRequest) {
+    public ResponseEntity<Void> saveRestaurant(@RequestBody RestaurantRequest restaurantRequest) {
         restaurantHandler.saveRestaurant(restaurantRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
