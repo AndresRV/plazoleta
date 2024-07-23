@@ -23,7 +23,7 @@ public class DishHandler implements IDishHandler {
     private final IDishRequestMapper dishRequestMapper;
 
     @Override
-    public void saveDish(DishRequest dishRequest) {
+    public void saveDish(DishRequest dishRequest, Long idUserRequest) {
         Category category = categoryServicePort.getCategoryByCategoryName(dishRequest.getCategoryName());
         Restaurant restaurant = restaurantServicePort.getRestauranByNit(dishRequest.getRestaurantNit());
 
@@ -31,11 +31,11 @@ public class DishHandler implements IDishHandler {
         dish.setIdCategory(category.getId());
         dish.setIdRestaurant(restaurant.getId());
 
-        dishServicePort.saveDish(dish);
+        dishServicePort.saveDish(dish, restaurant.getIdOwner() == idUserRequest);
     }
 
     @Override
-    public void updateDish(DishRequest dishRequest) {
+    public void updateDish(DishRequest dishRequest, Long idUserRequest) {
         Restaurant restaurant = restaurantServicePort.getRestauranByNit(dishRequest.getRestaurantNit());
 
         Dish oldDish = dishServicePort.getDishByNameAndIdRestaurant(dishRequest.getName(), restaurant.getId());
@@ -53,6 +53,6 @@ public class DishHandler implements IDishHandler {
         if (newDish.getPrice() == null)
             newDish.setPrice(oldDish.getPrice());
 
-        dishServicePort.updateDish(newDish);
+        dishServicePort.updateDish(newDish, restaurant.getIdOwner() == idUserRequest);
     }
 }
