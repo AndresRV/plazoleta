@@ -55,4 +55,24 @@ public class DishHandler implements IDishHandler {
 
         dishServicePort.updateDish(newDish, restaurant.getIdOwner() == idUserRequest);
     }
+
+    @Override
+    public void activeDish(DishRequest dishActiveRequest, Long idUserRequest) {
+        Restaurant restaurant = restaurantServicePort.getRestauranByNit(dishActiveRequest.getRestaurantNit());
+
+        Dish oldDish = dishServicePort.getDishByNameAndIdRestaurant(dishActiveRequest.getName(), restaurant.getId());
+
+        Dish newDish = dishRequestMapper.toDish(dishActiveRequest);
+        newDish.setId(oldDish.getId());
+        newDish.setIdCategory(oldDish.getIdCategory());
+        newDish.setIdRestaurant(oldDish.getIdRestaurant());
+        newDish.setImageUrl(oldDish.getImageUrl());
+        newDish.setDescription(oldDish.getDescription());
+        newDish.setPrice(oldDish.getPrice());
+
+        if (newDish.getActive() == null)
+            newDish.setActive(oldDish.getActive());
+
+        dishServicePort.updateDish(newDish, restaurant.getIdOwner() == idUserRequest);
+    }
 }
