@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,14 @@ public class DishRestController {
     public ResponseEntity<Void> updateDish(HttpServletRequest request, @RequestBody DishRequest dishRequest) {
         Long idUserRequest = extractIdUserRequest(request.getHeader(HttpHeaders.AUTHORIZATION));
         dishHandler.updateDish(dishRequest, idUserRequest);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("")
+    @PreAuthorize("hasRole('Propietario')")
+    public ResponseEntity<Void> activeDish(HttpServletRequest request, @RequestBody DishRequest dishActiveRequest) {
+        Long idUserRequest = extractIdUserRequest(request.getHeader(HttpHeaders.AUTHORIZATION));
+        dishHandler.activeDish(dishActiveRequest, idUserRequest);
         return ResponseEntity.noContent().build();
     }
 
