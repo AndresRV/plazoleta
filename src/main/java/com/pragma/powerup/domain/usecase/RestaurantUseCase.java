@@ -9,6 +9,7 @@ import com.pragma.powerup.domain.spi.IRestaurantPersistencePort;
 import com.pragma.powerup.domain.spi.IUserRestPort;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,6 +33,11 @@ public class RestaurantUseCase implements IRestaurantServicePort {
     @Override
     public Restaurant getRestauranByNit(Long nit) {
         return restaurantPersistentPort.getRestauranByNit(nit);
+    }
+
+    @Override
+    public List<Restaurant> getPagedRestaurants(int page, int size) {
+        return restaurantPersistentPort.getPagedRestaurants(page, size);
     }
 
     private static void validatePhoneNumber(String phoneNumber) {
