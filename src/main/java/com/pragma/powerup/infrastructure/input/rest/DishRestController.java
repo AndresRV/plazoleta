@@ -2,6 +2,8 @@ package com.pragma.powerup.infrastructure.input.rest;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.pragma.powerup.application.dto.request.DishRequest;
+import com.pragma.powerup.application.dto.response.DishResponse;
+import com.pragma.powerup.application.dto.response.RestaurantResponse;
 import com.pragma.powerup.application.handler.IDishHandler;
 import com.pragma.powerup.infrastructure.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +18,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/dish")
@@ -51,6 +57,14 @@ public class DishRestController {
         Long idUserRequest = extractIdUserRequest(request.getHeader(HttpHeaders.AUTHORIZATION));
         dishHandler.activeDish(dishActiveRequest, idUserRequest);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/category/{categoryName}")
+    @PreAuthorize("hasRole('Cliente')")
+    public ResponseEntity<List<DishResponse>> getPagedDishes(@PathVariable String categoryName,
+                                                                  @RequestParam(defaultValue = "0") int page,
+                                                                  @RequestParam(defaultValue = "2") int size) {
+        return ResponseEntity.ok(dishHandler.getPagedDishes(categoryName, page, size));
     }
 
     private Long extractIdUserRequest(String jwtToken) {
