@@ -1,8 +1,11 @@
 package com.pragma.powerup.application.handler.impl;
 
 import com.pragma.powerup.application.dto.request.DishRequest;
+import com.pragma.powerup.application.dto.response.DishResponse;
+import com.pragma.powerup.application.dto.response.RestaurantResponse;
 import com.pragma.powerup.application.handler.IDishHandler;
 import com.pragma.powerup.application.mapper.IDishRequestMapper;
+import com.pragma.powerup.application.mapper.IDishResponseMapper;
 import com.pragma.powerup.domain.api.ICategoryServicePort;
 import com.pragma.powerup.domain.api.IDishServicePort;
 import com.pragma.powerup.domain.api.IRestaurantServicePort;
@@ -13,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -21,6 +26,7 @@ public class DishHandler implements IDishHandler {
     private final ICategoryServicePort categoryServicePort;
     private final IRestaurantServicePort restaurantServicePort;
     private final IDishRequestMapper dishRequestMapper;
+    private final IDishResponseMapper dishResponseMapper;
 
     @Override
     public void saveDish(DishRequest dishRequest, Long idUserRequest) {
@@ -74,5 +80,11 @@ public class DishHandler implements IDishHandler {
             newDish.setActive(oldDish.getActive());
 
         dishServicePort.updateDish(newDish, restaurant.getIdOwner() == idUserRequest);
+    }
+
+    @Override
+    public List<DishResponse> getPagedDishes(String categoryName, int page, int size) {
+        Category category = categoryServicePort.getCategoryByCategoryName(categoryName);
+        return dishResponseMapper.toResponseList(dishServicePort.getPagedDishes(category.getId(), page, size));
     }
 }

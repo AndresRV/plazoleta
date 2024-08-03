@@ -4,9 +4,11 @@ import com.pragma.powerup.domain.api.IDishServicePort;
 import com.pragma.powerup.domain.exception.InvalidPhoneNumberException;
 import com.pragma.powerup.domain.exception.InvalidUserRequestIsNotOwner;
 import com.pragma.powerup.domain.model.Dish;
+import com.pragma.powerup.domain.model.Restaurant;
 import com.pragma.powerup.domain.spi.IDishPersistencePort;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +32,11 @@ public class DishUseCase implements IDishServicePort {
     public void updateDish(Dish dish, boolean userRequestIsOwner) {
         validateUserRequestIsOwner(userRequestIsOwner);
         dishPersistencePort.updateDish(dish);
+    }
+
+    @Override
+    public List<Dish> getPagedDishes(Long idCategory, int page, int size) {
+        return dishPersistencePort.getPagedDishes(idCategory, page, size);
     }
 
     private static void validateUserRequestIsOwner(boolean userRequestIsOwner) {
