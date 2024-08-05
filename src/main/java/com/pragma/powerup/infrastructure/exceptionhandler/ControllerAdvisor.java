@@ -8,7 +8,7 @@ import com.pragma.powerup.infrastructure.exception.DishAlreadyExistsException;
 import com.pragma.powerup.infrastructure.exception.NoDataFoundException;
 import com.pragma.powerup.infrastructure.exception.RestaurantAlreadyExistsException;
 import com.pragma.powerup.infrastructure.exception.RestaurantNotFoundException;
-import com.pragma.powerup.infrastructure.exception.OrderActiveException;
+import com.pragma.powerup.domain.exception.OrderActiveException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -59,9 +59,9 @@ public class ControllerAdvisor {
 
     @ExceptionHandler(OrderActiveException.class)
     public ResponseEntity<Map<String, String>> handleOrderActiveException(
-            OrderActiveException ignoredOrderActiveException) {
+            OrderActiveException orderActiveException) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(Collections.singletonMap(MESSAGE, ExceptionResponse.ORDER_ACTIVE_EXISTS.getMessage()));
+                .body(Collections.singletonMap(MESSAGE, orderActiveException.getMessage()));
     }
 
     @ExceptionHandler(DishAlreadyExistsException.class)
