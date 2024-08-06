@@ -5,6 +5,6 @@ import com.pragma.powerup.domain.model.Order;
 import java.util.List;
 
 public interface IOrderPersistencePort {
-    void saveOrder(Order order);
+    Order saveOrder(Order order);
     List<Order> getAllOrdersByIdClientAndIdRestaurant(Long idClient, Long idRestaurant);
 }

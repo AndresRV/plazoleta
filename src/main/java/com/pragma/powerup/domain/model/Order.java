@@ -9,7 +9,6 @@ public class Order {
     private OrderStatusEnum orderStatusEnum;
     private Long idChef;
     private Long idRestaurant;
-    //lista de platos
 
     public Order(Long id, Long idClient, LocalDateTime dateTimeOrder, OrderStatusEnum orderStatusEnum, Long idChef, Long idRestaurant) {
         this.id = id;

@@ -18,12 +18,12 @@ public class OrderUseCase implements IOrderServicePort {
     private final IOrderPersistencePort orderPersistencePort;
 
     @Override
-    public void saveOrder(Order order) {
+    public Order saveOrder(Order order) {
         ValidateOrdersNotActiveByUserInRestaurant(order.getIdClient(), order.getIdRestaurant());
 
         order.setDateTimeOrder(ZonedDateTime.now(ZoneId.of(Constants.TIME_ZONE)).toLocalDateTime());
         order.setOrderStatusEnum(OrderStatusEnum.PENDING);
-        orderPersistencePort.saveOrder(order);
+        return orderPersistencePort.saveOrder(order);
     }
 
     private void ValidateOrdersNotActiveByUserInRestaurant(Long idClient, Long idRestaurant) {

@@ -12,5 +12,6 @@ import java.util.List;
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface IOrderEntityMapper {
     OrderEntity toEntity(Order order);
+    Order toOrder(OrderEntity orderEntity);
     List<Order> toOrderList(List<OrderEntity> orderEntityList);
 }
