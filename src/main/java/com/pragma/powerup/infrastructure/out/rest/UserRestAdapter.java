@@ -11,4 +11,9 @@ public class UserRestAdapter implements IUserRestPort {
     public Boolean isOwnerUser(Long idUser) {
         return userFeignClient.isOwnerUser(idUser);
     }
+
+    @Override
+    public Long getRestaurantByUser(Integer documentNumber) {
+        return userFeignClient.getRestaurantByUser(documentNumber);
+    }
 }

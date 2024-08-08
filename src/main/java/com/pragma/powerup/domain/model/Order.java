@@ -1,6 +1,9 @@
 package com.pragma.powerup.domain.model;
 
+import com.pragma.powerup.domain.model.union.OrderDish;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Order {
     private Long id;
@@ -9,6 +12,7 @@ public class Order {
     private OrderStatusEnum orderStatusEnum;
     private Long idChef;
     private Long idRestaurant;
+    private List<OrderDish> orderDishList;
 
     public Order(Long id, Long idClient, LocalDateTime dateTimeOrder, OrderStatusEnum orderStatusEnum, Long idChef, Long idRestaurant) {
         this.id = id;
@@ -65,5 +69,13 @@ public class Order {
 
     public void setIdRestaurant(Long idRestaurant) {
         this.idRestaurant = idRestaurant;
+    }
+
+    public List<OrderDish> getOrderDishList() {
+        return orderDishList;
+    }
+
+    public void setOrderDishList(List<OrderDish> orderDishList) {
+        this.orderDishList = orderDishList;
     }
 }
