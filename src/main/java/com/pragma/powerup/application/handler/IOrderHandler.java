@@ -6,5 +6,5 @@ import com.pragma.powerup.domain.model.OrderStatusEnum;
 
 public interface IOrderHandler {
     void saveOrder(OrderRequest orderRequest);
-    OrderResponse getPagedOrders(OrderStatusEnum orderStatusEnum, int page, int size);
+    OrderResponse getPagedOrders(Integer documentNumberUserRequest, OrderStatusEnum orderStatusEnum, int page, int size);
 }

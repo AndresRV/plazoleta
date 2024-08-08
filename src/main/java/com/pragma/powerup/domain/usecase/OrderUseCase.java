@@ -6,7 +6,9 @@ import com.pragma.powerup.domain.exception.OrderActiveException;
 import com.pragma.powerup.domain.model.Order;
 import com.pragma.powerup.domain.model.OrderStatusEnum;
 import com.pragma.powerup.domain.spi.IOrderPersistencePort;
+import com.pragma.powerup.domain.spi.IUserRestPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -16,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderUseCase implements IOrderServicePort {
     private final IOrderPersistencePort orderPersistencePort;
+    private final IUserRestPort userRestPort;
 
     @Override
     public Order saveOrder(Order order) {
@@ -24,6 +27,13 @@ public class OrderUseCase implements IOrderServicePort {
         order.setDateTimeOrder(ZonedDateTime.now(ZoneId.of(Constants.TIME_ZONE)).toLocalDateTime());
         order.setOrderStatusEnum(OrderStatusEnum.PENDING);
         return orderPersistencePort.saveOrder(order);
+    }
+
+    //TODO: MEJORA en vez de usar Page y compormeter el dominio - se puede usar la definicion fninal de los modelos y dejar Page solo en infraestructura
+    @Override
+    public Page<Order> getPagedOrders(Integer documentNumberUserRequest, OrderStatusEnum orderStatusEnum, int page, int size) {
+        Long idRestaurant = userRestPort.getRestaurantByUser(documentNumberUserRequest);
+        return orderPersistencePort.getPagedOrdersByIdRestaurantAndOrderStatusEnum(idRestaurant, orderStatusEnum, page, size);
     }
 
     private void ValidateOrdersNotActiveByUserInRestaurant(Long idClient, Long idRestaurant) {

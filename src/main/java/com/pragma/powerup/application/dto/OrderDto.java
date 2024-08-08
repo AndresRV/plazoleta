@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderDto {
+    private Long idOrder;
     private Long idClient;
     private LocalDateTime dateTimeOrder;
     private OrderStatusEnum orderStatusEnum;

@@ -8,4 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface UserFeignClient {
     @GetMapping("/api/v1/user/ownerUser/{idUser}")
     Boolean isOwnerUser(@PathVariable("idUser") Long idUser);
+
+    @GetMapping("/api/v1/userrestaurant/{documentNumber}")
+    Long getRestaurantByUser(@PathVariable("documentNumber") Integer documentNumber);
+
 }

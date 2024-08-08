@@ -15,10 +15,7 @@ import com.pragma.powerup.domain.model.Order;
 import com.pragma.powerup.domain.model.OrderStatusEnum;
 import com.pragma.powerup.domain.model.Restaurant;
 import com.pragma.powerup.domain.model.union.OrderDish;
-import com.pragma.powerup.domain.spi.IOrderPersistencePort;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,10 +29,6 @@ public class OrderHandler implements IOrderHandler {
     private final IOrderDishServicePort orderDishServicePort;
     private final IOrderRequestMapper orderRequestMapper;
     private final IOrderResponseMapper orderResponseMapper;
-
-//TODO: debe conectar a domain
-    @Autowired
-    private final IOrderPersistencePort orderPersistencePort;
 
     @Override
     public void saveOrder(OrderRequest orderRequest) {
@@ -53,11 +46,7 @@ public class OrderHandler implements IOrderHandler {
     }
 
     @Override
-    public OrderResponse getPagedOrders(OrderStatusEnum orderStatusEnum, int page, int size) {
-        //TODO: se debe llevar a caso de uso
-
-        Page<Order> orderList = orderPersistencePort.getPagedOrders(orderStatusEnum, page, size);
-
-        return orderResponseMapper.toResponse(orderList);
+    public OrderResponse getPagedOrders(Integer documentNumberUserRequest, OrderStatusEnum orderStatusEnum, int page, int size) {
+        return orderResponseMapper.toResponse(orderServicePort.getPagedOrders(documentNumberUserRequest, orderStatusEnum, page, size));
     }
 }

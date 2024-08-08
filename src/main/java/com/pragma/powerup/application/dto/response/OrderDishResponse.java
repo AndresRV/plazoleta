@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class OrderDishResponse {
     private String name;
-    private String category;
     private String description;
     private String imageUrl;
+    private Integer quantity;
 }

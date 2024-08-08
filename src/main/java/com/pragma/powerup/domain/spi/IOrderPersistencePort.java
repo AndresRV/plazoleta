@@ -9,5 +9,5 @@ import java.util.List;
 public interface IOrderPersistencePort {
     Order saveOrder(Order order);
     List<Order> getAllOrdersByIdClientAndIdRestaurant(Long idClient, Long idRestaurant);
-    Page<Order> getPagedOrders(OrderStatusEnum orderStatusEnum, int page, int size);
+    Page<Order> getPagedOrdersByIdRestaurantAndOrderStatusEnum(Long idRestaurant, OrderStatusEnum orderStatusEnum, int page, int size);
 }

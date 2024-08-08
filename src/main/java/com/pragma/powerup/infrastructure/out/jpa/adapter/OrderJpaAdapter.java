@@ -28,8 +28,8 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
     }
 
     @Override
-    public Page<Order> getPagedOrders(OrderStatusEnum orderStatusEnum, int page, int size) {
+    public Page<Order>  getPagedOrdersByIdRestaurantAndOrderStatusEnum(Long idRestaurant, OrderStatusEnum orderStatusEnum, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return orderEntityMapper.toOrderPage(orderRepository.findAllByOrderStatusEnum(orderStatusEnum, pageable));
+        return orderEntityMapper.toOrderPage(orderRepository.findAllByIdRestaurantAndOrderStatusEnum(idRestaurant, orderStatusEnum, pageable));
     }
 }
