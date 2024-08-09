@@ -64,15 +64,15 @@ public class OrderRestController {
         orderHandler.readyOrder(idOrder, idUserRequest);
         return ResponseEntity.noContent().build();
     }
-/*
-    @PatchMapping("/delivered/{idOrder}")
+
+    @PatchMapping("/delivered/{idOrder}/{claimPin}")
     @PreAuthorize("hasRole('Empleado')")
-    public ResponseEntity<Void> deliveredOrder(HttpServletRequest request, @PathVariable Long idOrder) {
+    public ResponseEntity<Void> deliveredOrder(HttpServletRequest request, @PathVariable Long idOrder, @PathVariable String claimPin) {
         Long idUserRequest = extractIdUserRequest(request.getHeader(HttpHeaders.AUTHORIZATION));
-        orderHandler.deliveredOrder(idOrder, idUserRequest);
+        orderHandler.deliveredOrder(idOrder, idUserRequest, claimPin);
         return ResponseEntity.noContent().build();
     }
-
+/*
     @PatchMapping("/cancelled/{idOrder}")
     @PreAuthorize("hasRole('Cliente')")
     public ResponseEntity<Void> cancelledOrder(HttpServletRequest request, @PathVariable Long idOrder) {

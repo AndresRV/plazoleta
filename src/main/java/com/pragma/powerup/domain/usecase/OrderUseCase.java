@@ -2,6 +2,7 @@ package com.pragma.powerup.domain.usecase;
 
 import com.pragma.powerup.domain.Utils.Constants;
 import com.pragma.powerup.domain.api.IOrderServicePort;
+import com.pragma.powerup.domain.exception.InvalidClaimPinException;
 import com.pragma.powerup.domain.exception.InvalidStatusException;
 import com.pragma.powerup.domain.exception.OrderActiveException;
 import com.pragma.powerup.domain.model.Order;
@@ -59,17 +60,18 @@ public class OrderUseCase implements IOrderServicePort {
         orderPersistencePort.updateOrder(order);
         //TODO: enviar notificacion a cliente
     }
-/*
+
     @Override
-    public void deliveredOrder(Long idOrder, Long idUserRequest) {
+    public void deliveredOrder(Long idOrder, Long idUserRequest, String claimPin) {
         Order order = orderPersistencePort.findById(idOrder);
 
         ValidatePreviousStateBeforeDelivered(order);
+        ValidateClaimPin(claimPin, order);
 
         order.setOrderStatusEnum(OrderStatusEnum.DELIVERED);
         orderPersistencePort.updateOrder(order);
     }
-
+/*
     @Override
     public void cancelledOrder(Long idOrder, Long idUserRequest) {
         Order order = orderPersistencePort.findById(idOrder);
@@ -102,11 +104,16 @@ public class OrderUseCase implements IOrderServicePort {
             throw new InvalidStatusException(Constants.ORDER_INVALID_STATUS);
         }
     }
-/*
+
     private void ValidatePreviousStateBeforeDelivered(Order order) {
         if(!order.getOrderStatusEnum().equals(OrderStatusEnum.READY)) {
             throw new InvalidStatusException(Constants.ORDER_INVALID_STATUS);
         }
     }
- */
+
+    private void ValidateClaimPin(String claimPin, Order order) {
+        if(!claimPin.equals(order.getClaimPin())) {
+            throw new InvalidClaimPinException(Constants.INVALID_CLAIM_PIN);
+        }
+    }
 }

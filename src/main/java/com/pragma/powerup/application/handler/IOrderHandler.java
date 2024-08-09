@@ -9,6 +9,6 @@ public interface IOrderHandler {
     OrderResponse getPagedOrders(Integer documentNumberUserRequest, OrderStatusEnum orderStatusEnum, int page, int size);
     void assignOrder(Long idOrder, Long idUserRequest);
     void readyOrder(Long idOrder, Long idUserRequest);
-    /*void deliveredOrder(Long idOrder, Long idUserRequest);
-    void cancelledOrder(Long idOrder, Long idUserRequest);*/
+    void deliveredOrder(Long idOrder, Long idUserRequest, String claimPin);
+    /*void cancelledOrder(Long idOrder, Long idUserRequest);*/
 }

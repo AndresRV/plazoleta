@@ -59,12 +59,12 @@ public class OrderHandler implements IOrderHandler {
     public void readyOrder(Long idOrder, Long idUserRequest) {
         orderServicePort.readyOrder(idOrder, idUserRequest);
     }
-/*
-    @Override
-    public void deliveredOrder(Long idOrder, Long idUserRequest) {
-        orderServicePort.deliveredOrder(idOrder, idUserRequest);
-    }
 
+    @Override
+    public void deliveredOrder(Long idOrder, Long idUserRequest, String claimPin) {
+        orderServicePort.deliveredOrder(idOrder, idUserRequest, claimPin);
+    }
+/*
     @Override
     public void cancelledOrder(Long idOrder, Long idUserRequest) {
         orderServicePort.cancelledOrder(idOrder, idUserRequest);
