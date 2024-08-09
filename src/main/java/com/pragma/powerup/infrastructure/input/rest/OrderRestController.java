@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,7 +41,7 @@ public class OrderRestController {
 
     @GetMapping("/status/{orderStatusEnum}")
     @PreAuthorize("hasRole('Empleado')")
-    public ResponseEntity<OrderResponse> getPagedDishes(HttpServletRequest request,
+    public ResponseEntity<OrderResponse> getPagedOrders(HttpServletRequest request,
                                                         @PathVariable OrderStatusEnum orderStatusEnum,
                                                         @RequestParam(defaultValue = "0") int page,
                                                         @RequestParam(defaultValue = "2") int size) {
@@ -48,6 +49,15 @@ public class OrderRestController {
         return ResponseEntity.ok(orderHandler.getPagedOrders(documentNumberUserRequest, orderStatusEnum, page, size));
     }
 
+    @PatchMapping("/{idOrder}")
+    @PreAuthorize("hasRole('Empleado')")
+    public ResponseEntity<Void> assignOrder(HttpServletRequest request, @PathVariable Long idOrder) {
+        Long idUserRequest = extractIdUserRequest(request.getHeader(HttpHeaders.AUTHORIZATION));
+        orderHandler.assignOrder(idOrder, idUserRequest);
+        return ResponseEntity.noContent().build();
+    }
+
+    //TODO: MEJORA llevar a clase utils los metodos que manejan jwt
     private Integer extractDocumentNumberUserRequest(String jwtToken) {
         Integer idUserResquest = 0;
 
@@ -55,6 +65,18 @@ public class OrderRestController {
             jwtToken = jwtToken.substring(7);
             DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
             idUserResquest = Integer.parseInt(jwtUtils.getSpecificClaim(decodedJWT, "sub").asString());
+        }
+
+        return idUserResquest;
+    }
+
+    private Long extractIdUserRequest(String jwtToken) {
+        Long idUserResquest = 0L;
+
+        if (jwtToken != null) {
+            jwtToken = jwtToken.substring(7);
+            DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
+            idUserResquest = Long.parseLong(jwtUtils.getSpecificClaim(decodedJWT, "ui").toString());
         }
 
         return idUserResquest;
