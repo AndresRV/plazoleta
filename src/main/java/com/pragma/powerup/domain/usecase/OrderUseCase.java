@@ -41,13 +41,45 @@ public class OrderUseCase implements IOrderServicePort {
     public void assignOrder(Long idOrder, Long idUserRequest) {
         Order order = orderPersistencePort.findById(idOrder);
 
-        ValidatePreviousStateBeforeAccept(order);
+        ValidatePreviousStateBeforeAcceptOrCancel(order);
 
         order.setOrderStatusEnum(OrderStatusEnum.ACCEPTED);
         order.setIdChef(idUserRequest);
         orderPersistencePort.updateOrder(order);
     }
 
+    @Override
+    public void readyOrder(Long idOrder, Long idUserRequest) {
+        Order order = orderPersistencePort.findById(idOrder);
+
+        ValidatePreviousStateBeforeReady(order);
+
+        order.setOrderStatusEnum(OrderStatusEnum.READY);
+        order.setClaimPin("codigo" + order.getId());
+        orderPersistencePort.updateOrder(order);
+        //TODO: enviar notificacion a cliente
+    }
+/*
+    @Override
+    public void deliveredOrder(Long idOrder, Long idUserRequest) {
+        Order order = orderPersistencePort.findById(idOrder);
+
+        ValidatePreviousStateBeforeDelivered(order);
+
+        order.setOrderStatusEnum(OrderStatusEnum.DELIVERED);
+        orderPersistencePort.updateOrder(order);
+    }
+
+    @Override
+    public void cancelledOrder(Long idOrder, Long idUserRequest) {
+        Order order = orderPersistencePort.findById(idOrder);
+
+        ValidatePreviousStateBeforeAcceptOrCancel(order);
+
+        order.setOrderStatusEnum(OrderStatusEnum.CANCELLED);
+        orderPersistencePort.updateOrder(order);
+    }
+*/
     private void ValidateOrdersNotActiveByUserInRestaurant(Long idClient, Long idRestaurant) {
         List<Order> orderList = orderPersistencePort.getAllOrdersByIdClientAndIdRestaurant(idClient, idRestaurant);
 
@@ -59,9 +91,22 @@ public class OrderUseCase implements IOrderServicePort {
         }
     }
 
-    private void ValidatePreviousStateBeforeAccept(Order order) {
+    private void ValidatePreviousStateBeforeAcceptOrCancel(Order order) {
         if(!order.getOrderStatusEnum().equals(OrderStatusEnum.PENDING)) {
             throw new InvalidStatusException(Constants.ORDER_INVALID_STATUS);
         }
     }
+
+    private void ValidatePreviousStateBeforeReady(Order order) {
+        if(!order.getOrderStatusEnum().equals(OrderStatusEnum.ACCEPTED)) {
+            throw new InvalidStatusException(Constants.ORDER_INVALID_STATUS);
+        }
+    }
+/*
+    private void ValidatePreviousStateBeforeDelivered(Order order) {
+        if(!order.getOrderStatusEnum().equals(OrderStatusEnum.READY)) {
+            throw new InvalidStatusException(Constants.ORDER_INVALID_STATUS);
+        }
+    }
+ */
 }

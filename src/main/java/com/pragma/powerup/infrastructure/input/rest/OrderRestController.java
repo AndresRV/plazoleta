@@ -49,7 +49,7 @@ public class OrderRestController {
         return ResponseEntity.ok(orderHandler.getPagedOrders(documentNumberUserRequest, orderStatusEnum, page, size));
     }
 
-    @PatchMapping("/{idOrder}")
+    @PatchMapping("/accepted/{idOrder}")
     @PreAuthorize("hasRole('Empleado')")
     public ResponseEntity<Void> assignOrder(HttpServletRequest request, @PathVariable Long idOrder) {
         Long idUserRequest = extractIdUserRequest(request.getHeader(HttpHeaders.AUTHORIZATION));
@@ -57,6 +57,30 @@ public class OrderRestController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/ready/{idOrder}")
+    @PreAuthorize("hasRole('Empleado')")
+    public ResponseEntity<Void> readyOrder(HttpServletRequest request, @PathVariable Long idOrder) {
+        Long idUserRequest = extractIdUserRequest(request.getHeader(HttpHeaders.AUTHORIZATION));
+        orderHandler.readyOrder(idOrder, idUserRequest);
+        return ResponseEntity.noContent().build();
+    }
+/*
+    @PatchMapping("/delivered/{idOrder}")
+    @PreAuthorize("hasRole('Empleado')")
+    public ResponseEntity<Void> deliveredOrder(HttpServletRequest request, @PathVariable Long idOrder) {
+        Long idUserRequest = extractIdUserRequest(request.getHeader(HttpHeaders.AUTHORIZATION));
+        orderHandler.deliveredOrder(idOrder, idUserRequest);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/cancelled/{idOrder}")
+    @PreAuthorize("hasRole('Cliente')")
+    public ResponseEntity<Void> cancelledOrder(HttpServletRequest request, @PathVariable Long idOrder) {
+        Long idUserRequest = extractIdUserRequest(request.getHeader(HttpHeaders.AUTHORIZATION));
+        orderHandler.cancelledOrder(idOrder, idUserRequest);
+        return ResponseEntity.noContent().build();
+    }
+*/
     //TODO: MEJORA llevar a clase utils los metodos que manejan jwt
     private Integer extractDocumentNumberUserRequest(String jwtToken) {
         Integer idUserResquest = 0;

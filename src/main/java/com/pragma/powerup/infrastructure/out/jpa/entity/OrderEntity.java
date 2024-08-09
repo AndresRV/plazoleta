@@ -43,4 +43,6 @@ public class OrderEntity {
     private Long idRestaurant;
     @OneToMany(mappedBy = "orderEntity")
     private Set<OrderDishEntity> orderDishes = new HashSet<>();
+    @Column(name = "claim_pin", nullable = true)
+    private String claimPin;
 }
