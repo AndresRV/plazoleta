@@ -50,7 +50,7 @@ public class OrderUseCase implements IOrderServicePort {
     }
 
     @Override
-    public void readyOrder(Long idOrder, Long idUserRequest) {
+    public void readyOrder(Long idOrder) {
         Order order = orderPersistencePort.findById(idOrder);
 
         ValidatePreviousStateBeforeReady(order);
@@ -62,7 +62,7 @@ public class OrderUseCase implements IOrderServicePort {
     }
 
     @Override
-    public void deliveredOrder(Long idOrder, Long idUserRequest, String claimPin) {
+    public void deliveredOrder(Long idOrder, String claimPin) {
         Order order = orderPersistencePort.findById(idOrder);
 
         ValidatePreviousStateBeforeDelivered(order);
@@ -71,9 +71,9 @@ public class OrderUseCase implements IOrderServicePort {
         order.setOrderStatusEnum(OrderStatusEnum.DELIVERED);
         orderPersistencePort.updateOrder(order);
     }
-/*
+
     @Override
-    public void cancelledOrder(Long idOrder, Long idUserRequest) {
+    public void cancelledOrder(Long idOrder) {
         Order order = orderPersistencePort.findById(idOrder);
 
         ValidatePreviousStateBeforeAcceptOrCancel(order);
@@ -81,7 +81,7 @@ public class OrderUseCase implements IOrderServicePort {
         order.setOrderStatusEnum(OrderStatusEnum.CANCELLED);
         orderPersistencePort.updateOrder(order);
     }
-*/
+
     private void ValidateOrdersNotActiveByUserInRestaurant(Long idClient, Long idRestaurant) {
         List<Order> orderList = orderPersistencePort.getAllOrdersByIdClientAndIdRestaurant(idClient, idRestaurant);
 
