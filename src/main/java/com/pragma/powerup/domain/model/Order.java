@@ -13,6 +13,7 @@ public class Order {
     private Long idChef;
     private Long idRestaurant;
     private List<OrderDish> orderDishList;
+    private String claimPin;
 
     public Order(Long id, Long idClient, LocalDateTime dateTimeOrder, OrderStatusEnum orderStatusEnum, Long idChef, Long idRestaurant) {
         this.id = id;
@@ -77,5 +78,13 @@ public class Order {
 
     public void setOrderDishList(List<OrderDish> orderDishList) {
         this.orderDishList = orderDishList;
+    }
+
+    public String getClaimPin() {
+        return claimPin;
+    }
+
+    public void setClaimPin(String claimPin) {
+        this.claimPin = claimPin;
     }
 }

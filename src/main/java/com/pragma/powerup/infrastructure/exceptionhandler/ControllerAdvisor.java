@@ -1,5 +1,6 @@
 package com.pragma.powerup.infrastructure.exceptionhandler;
 
+import com.pragma.powerup.domain.exception.InvalidClaimPinException;
 import com.pragma.powerup.domain.exception.InvalidNameException;
 import com.pragma.powerup.domain.exception.InvalidPhoneNumberException;
 import com.pragma.powerup.domain.exception.InvalidStatusException;
@@ -78,6 +79,13 @@ public class ControllerAdvisor {
             InvalidStatusException invalidStatusException) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Collections.singletonMap(MESSAGE, invalidStatusException.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidClaimPinException.class)
+    public ResponseEntity<Map<String, String>> handleOInvalidClaimPinException(
+            InvalidClaimPinException InvalidClaimPinException) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Collections.singletonMap(MESSAGE, InvalidClaimPinException.getMessage()));
     }
 
     @ExceptionHandler(DishAlreadyExistsException.class)

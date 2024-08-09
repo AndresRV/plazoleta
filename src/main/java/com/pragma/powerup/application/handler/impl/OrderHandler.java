@@ -54,4 +54,19 @@ public class OrderHandler implements IOrderHandler {
     public void assignOrder(Long idOrder, Long idUserRequest) {
         orderServicePort.assignOrder(idOrder, idUserRequest);
     }
+
+    @Override
+    public void readyOrder(Long idOrder) {
+        orderServicePort.readyOrder(idOrder);
+    }
+
+    @Override
+    public void deliveredOrder(Long idOrder, String claimPin) {
+        orderServicePort.deliveredOrder(idOrder, claimPin);
+    }
+
+    @Override
+    public void cancelledOrder(Long idOrder) {
+        orderServicePort.cancelledOrder(idOrder);
+    }
 }

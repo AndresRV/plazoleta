@@ -49,11 +49,32 @@ public class OrderRestController {
         return ResponseEntity.ok(orderHandler.getPagedOrders(documentNumberUserRequest, orderStatusEnum, page, size));
     }
 
-    @PatchMapping("/{idOrder}")
+    @PatchMapping("/accepted/{idOrder}")
     @PreAuthorize("hasRole('Empleado')")
     public ResponseEntity<Void> assignOrder(HttpServletRequest request, @PathVariable Long idOrder) {
         Long idUserRequest = extractIdUserRequest(request.getHeader(HttpHeaders.AUTHORIZATION));
         orderHandler.assignOrder(idOrder, idUserRequest);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/ready/{idOrder}")
+    @PreAuthorize("hasRole('Empleado')")
+    public ResponseEntity<Void> readyOrder(HttpServletRequest request, @PathVariable Long idOrder) {
+        orderHandler.readyOrder(idOrder);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/delivered/{idOrder}/{claimPin}")
+    @PreAuthorize("hasRole('Empleado')")
+    public ResponseEntity<Void> deliveredOrder(HttpServletRequest request, @PathVariable Long idOrder, @PathVariable String claimPin) {
+        orderHandler.deliveredOrder(idOrder, claimPin);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/cancelled/{idOrder}")
+    @PreAuthorize("hasRole('Cliente')")
+    public ResponseEntity<Void> cancelledOrder(HttpServletRequest request, @PathVariable Long idOrder) {
+        orderHandler.cancelledOrder(idOrder);
         return ResponseEntity.noContent().build();
     }
 

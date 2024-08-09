@@ -2,6 +2,7 @@ package com.pragma.powerup.domain.usecase;
 
 import com.pragma.powerup.domain.Utils.Constants;
 import com.pragma.powerup.domain.api.IOrderServicePort;
+import com.pragma.powerup.domain.exception.InvalidClaimPinException;
 import com.pragma.powerup.domain.exception.InvalidStatusException;
 import com.pragma.powerup.domain.exception.OrderActiveException;
 import com.pragma.powerup.domain.model.Order;
@@ -41,10 +42,43 @@ public class OrderUseCase implements IOrderServicePort {
     public void assignOrder(Long idOrder, Long idUserRequest) {
         Order order = orderPersistencePort.findById(idOrder);
 
-        ValidatePreviousStateBeforeAccept(order);
+        ValidatePreviousStateBeforeAcceptOrCancel(order);
 
         order.setOrderStatusEnum(OrderStatusEnum.ACCEPTED);
         order.setIdChef(idUserRequest);
+        orderPersistencePort.updateOrder(order);
+    }
+
+    @Override
+    public void readyOrder(Long idOrder) {
+        Order order = orderPersistencePort.findById(idOrder);
+
+        ValidatePreviousStateBeforeReady(order);
+
+        order.setOrderStatusEnum(OrderStatusEnum.READY);
+        order.setClaimPin("codigo" + order.getId());
+        orderPersistencePort.updateOrder(order);
+        //TODO: enviar notificacion a cliente
+    }
+
+    @Override
+    public void deliveredOrder(Long idOrder, String claimPin) {
+        Order order = orderPersistencePort.findById(idOrder);
+
+        ValidatePreviousStateBeforeDelivered(order);
+        ValidateClaimPin(claimPin, order);
+
+        order.setOrderStatusEnum(OrderStatusEnum.DELIVERED);
+        orderPersistencePort.updateOrder(order);
+    }
+
+    @Override
+    public void cancelledOrder(Long idOrder) {
+        Order order = orderPersistencePort.findById(idOrder);
+
+        ValidatePreviousStateBeforeAcceptOrCancel(order);
+
+        order.setOrderStatusEnum(OrderStatusEnum.CANCELLED);
         orderPersistencePort.updateOrder(order);
     }
 
@@ -59,9 +93,27 @@ public class OrderUseCase implements IOrderServicePort {
         }
     }
 
-    private void ValidatePreviousStateBeforeAccept(Order order) {
+    private void ValidatePreviousStateBeforeAcceptOrCancel(Order order) {
         if(!order.getOrderStatusEnum().equals(OrderStatusEnum.PENDING)) {
             throw new InvalidStatusException(Constants.ORDER_INVALID_STATUS);
+        }
+    }
+
+    private void ValidatePreviousStateBeforeReady(Order order) {
+        if(!order.getOrderStatusEnum().equals(OrderStatusEnum.ACCEPTED)) {
+            throw new InvalidStatusException(Constants.ORDER_INVALID_STATUS);
+        }
+    }
+
+    private void ValidatePreviousStateBeforeDelivered(Order order) {
+        if(!order.getOrderStatusEnum().equals(OrderStatusEnum.READY)) {
+            throw new InvalidStatusException(Constants.ORDER_INVALID_STATUS);
+        }
+    }
+
+    private void ValidateClaimPin(String claimPin, Order order) {
+        if(!claimPin.equals(order.getClaimPin())) {
+            throw new InvalidClaimPinException(Constants.INVALID_CLAIM_PIN);
         }
     }
 }
