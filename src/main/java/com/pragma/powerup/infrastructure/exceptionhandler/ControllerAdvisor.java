@@ -2,10 +2,12 @@ package com.pragma.powerup.infrastructure.exceptionhandler;
 
 import com.pragma.powerup.domain.exception.InvalidNameException;
 import com.pragma.powerup.domain.exception.InvalidPhoneNumberException;
+import com.pragma.powerup.domain.exception.InvalidStatusException;
 import com.pragma.powerup.infrastructure.exception.CategoryNotFoundException;
 import com.pragma.powerup.infrastructure.exception.DishNotFoundException;
 import com.pragma.powerup.infrastructure.exception.DishAlreadyExistsException;
 import com.pragma.powerup.infrastructure.exception.NoDataFoundException;
+import com.pragma.powerup.infrastructure.exception.OrderNotFoundException;
 import com.pragma.powerup.infrastructure.exception.RestaurantAlreadyExistsException;
 import com.pragma.powerup.infrastructure.exception.RestaurantNotFoundException;
 import com.pragma.powerup.domain.exception.OrderActiveException;
@@ -50,6 +52,13 @@ public class ControllerAdvisor {
                 .body(Collections.singletonMap(MESSAGE, ExceptionResponse.NO_DATA_FOUND.getMessage()));
     }
 
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleOrderNotFoundException(
+            OrderNotFoundException ignoredOrderNotFoundException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap(MESSAGE, ExceptionResponse.NO_ORDER_FOUND.getMessage()));
+    }
+
     @ExceptionHandler(RestaurantAlreadyExistsException.class)
     public ResponseEntity<Map<String, String>> handleRestaurantAlreadyExistsException(
             RestaurantAlreadyExistsException ignoredRestaurantAlreadyExistsException) {
@@ -62,6 +71,13 @@ public class ControllerAdvisor {
             OrderActiveException orderActiveException) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Collections.singletonMap(MESSAGE, orderActiveException.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidStatusException.class)
+    public ResponseEntity<Map<String, String>> handleOInvalidStatusException(
+            InvalidStatusException invalidStatusException) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Collections.singletonMap(MESSAGE, invalidStatusException.getMessage()));
     }
 
     @ExceptionHandler(DishAlreadyExistsException.class)

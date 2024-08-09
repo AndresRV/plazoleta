@@ -49,4 +49,9 @@ public class OrderHandler implements IOrderHandler {
     public OrderResponse getPagedOrders(Integer documentNumberUserRequest, OrderStatusEnum orderStatusEnum, int page, int size) {
         return orderResponseMapper.toResponse(orderServicePort.getPagedOrders(documentNumberUserRequest, orderStatusEnum, page, size));
     }
+
+    @Override
+    public void assignOrder(Long idOrder, Long idUserRequest) {
+        orderServicePort.assignOrder(idOrder, idUserRequest);
+    }
 }

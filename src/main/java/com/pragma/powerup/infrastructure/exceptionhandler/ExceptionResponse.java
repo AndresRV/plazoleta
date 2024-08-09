@@ -5,6 +5,7 @@ public enum ExceptionResponse {
     NO_DISH_FOUND("No data found for the requested dish"),
     NO_RESTAURANT_FOUND("No data found for the requested restaurant"),
     NO_DATA_FOUND("No data found for the requested petition"),
+    NO_ORDER_FOUND("No data found for the requested order"),
     RESTAURANT_ALREADY_EXISTS("There is a restaurant with the same NIT"),
     DISH_ALREADY_EXISTS("There is a dish in the same restaurant");
 

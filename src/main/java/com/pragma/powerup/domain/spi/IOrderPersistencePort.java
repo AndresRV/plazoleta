@@ -10,4 +10,6 @@ public interface IOrderPersistencePort {
     Order saveOrder(Order order);
     List<Order> getAllOrdersByIdClientAndIdRestaurant(Long idClient, Long idRestaurant);
     Page<Order> getPagedOrdersByIdRestaurantAndOrderStatusEnum(Long idRestaurant, OrderStatusEnum orderStatusEnum, int page, int size);
+    Order findById(Long idOrder);
+    void updateOrder(Order order);
 }
