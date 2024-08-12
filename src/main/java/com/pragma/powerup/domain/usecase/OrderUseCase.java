@@ -7,7 +7,9 @@ import com.pragma.powerup.domain.exception.InvalidStatusException;
 import com.pragma.powerup.domain.exception.OrderActiveException;
 import com.pragma.powerup.domain.model.Order;
 import com.pragma.powerup.domain.model.OrderStatusEnum;
+import com.pragma.powerup.domain.model.Trace;
 import com.pragma.powerup.domain.spi.IOrderPersistencePort;
+import com.pragma.powerup.domain.spi.ITraceRestPort;
 import com.pragma.powerup.domain.spi.IUserRestPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import java.util.List;
 public class OrderUseCase implements IOrderServicePort {
     private final IOrderPersistencePort orderPersistencePort;
     private final IUserRestPort userRestPort;
+    private final ITraceRestPort traceRestPort;
 
     @Override
     public Order saveOrder(Order order) {
@@ -28,7 +31,10 @@ public class OrderUseCase implements IOrderServicePort {
 
         order.setDateTimeOrder(ZonedDateTime.now(ZoneId.of(Constants.TIME_ZONE)).toLocalDateTime());
         order.setOrderStatusEnum(OrderStatusEnum.PENDING);
-        return orderPersistencePort.saveOrder(order);
+        Order newOrder = orderPersistencePort.saveOrder(order);
+
+        RecordTrace(newOrder, null);
+        return newOrder;
     }
 
     //TODO: MEJORA en vez de usar Page y compormeter el dominio - se puede usar la definicion fninal de los modelos y dejar Page solo en infraestructura
@@ -43,10 +49,13 @@ public class OrderUseCase implements IOrderServicePort {
         Order order = orderPersistencePort.findById(idOrder);
 
         ValidatePreviousStateBeforeAcceptOrCancel(order);
+        OrderStatusEnum orderStatusOld = order.getOrderStatusEnum();
 
         order.setOrderStatusEnum(OrderStatusEnum.ACCEPTED);
         order.setIdChef(idUserRequest);
         orderPersistencePort.updateOrder(order);
+
+        RecordTrace(order, orderStatusOld);
     }
 
     @Override
@@ -54,11 +63,13 @@ public class OrderUseCase implements IOrderServicePort {
         Order order = orderPersistencePort.findById(idOrder);
 
         ValidatePreviousStateBeforeReady(order);
+        OrderStatusEnum orderStatusOld = order.getOrderStatusEnum();
 
         order.setOrderStatusEnum(OrderStatusEnum.READY);
         order.setClaimPin("codigo" + order.getId());
         orderPersistencePort.updateOrder(order);
         //TODO: enviar notificacion a cliente
+        RecordTrace(order, orderStatusOld);
     }
 
     @Override
@@ -67,9 +78,11 @@ public class OrderUseCase implements IOrderServicePort {
 
         ValidatePreviousStateBeforeDelivered(order);
         ValidateClaimPin(claimPin, order);
+        OrderStatusEnum orderStatusOld = order.getOrderStatusEnum();
 
         order.setOrderStatusEnum(OrderStatusEnum.DELIVERED);
         orderPersistencePort.updateOrder(order);
+        RecordTrace(order, orderStatusOld);
     }
 
     @Override
@@ -77,9 +90,11 @@ public class OrderUseCase implements IOrderServicePort {
         Order order = orderPersistencePort.findById(idOrder);
 
         ValidatePreviousStateBeforeAcceptOrCancel(order);
+        OrderStatusEnum orderStatusOld = order.getOrderStatusEnum();
 
         order.setOrderStatusEnum(OrderStatusEnum.CANCELLED);
         orderPersistencePort.updateOrder(order);
+        RecordTrace(order, orderStatusOld);
     }
 
     private void ValidateOrdersNotActiveByUserInRestaurant(Long idClient, Long idRestaurant) {
@@ -115,5 +130,16 @@ public class OrderUseCase implements IOrderServicePort {
         if(!claimPin.equals(order.getClaimPin())) {
             throw new InvalidClaimPinException(Constants.INVALID_CLAIM_PIN);
         }
+    }
+
+    private void RecordTrace(Order order, OrderStatusEnum orderStatusOld) {
+        Trace trace = new Trace(
+                order.getId(),
+                order.getIdClient(),
+                orderStatusOld,
+                order.getOrderStatusEnum(),
+                order.getIdChef()
+        );
+        traceRestPort.saveTrace(trace);
     }
 }
