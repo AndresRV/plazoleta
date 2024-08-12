@@ -10,6 +10,7 @@ import com.pragma.powerup.domain.spi.IDishPersistencePort;
 import com.pragma.powerup.domain.spi.IOrderDishPersistencePort;
 import com.pragma.powerup.domain.spi.IOrderPersistencePort;
 import com.pragma.powerup.domain.spi.IRestaurantPersistencePort;
+import com.pragma.powerup.domain.spi.ITraceRestPort;
 import com.pragma.powerup.domain.spi.IUserRestPort;
 import com.pragma.powerup.domain.usecase.CategoryUseCase;
 import com.pragma.powerup.domain.usecase.DishUseCase;
@@ -33,6 +34,9 @@ import com.pragma.powerup.infrastructure.out.jpa.repository.IOrderRepository;
 import com.pragma.powerup.infrastructure.out.jpa.repository.IRestaurantRepository;
 import com.pragma.powerup.infrastructure.out.rest.UserFeignClient;
 import com.pragma.powerup.infrastructure.out.rest.UserRestAdapter;
+import com.pragma.powerup.infrastructure.out.rest.trace.ITraceRequestMapper;
+import com.pragma.powerup.infrastructure.out.rest.trace.TraceFeignClient;
+import com.pragma.powerup.infrastructure.out.rest.trace.TraceRestAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,6 +56,8 @@ public class BeanConfiguration {
 
     private final IOrderRepository orderRepository;
     private final IOrderEntityMapper orderEntityMapper;
+    private final TraceFeignClient traceFeignClient;
+    private final ITraceRequestMapper traceRequestMapper;
 
     private final IOrderDishRepository orderDishRepository;
     private final IOrderDishEntityMapper orderDishEntityMapper;
@@ -97,8 +103,13 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public ITraceRestPort traceRestPort(){
+        return new TraceRestAdapter(traceFeignClient, traceRequestMapper);
+    }
+
+    @Bean
     public IOrderServicePort orderServicePort() {
-        return new OrderUseCase(orderPersistencePort(), userRestPort());
+        return new OrderUseCase(orderPersistencePort(), userRestPort(), traceRestPort());
     }
 
     @Bean
